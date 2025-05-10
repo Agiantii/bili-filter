@@ -11,7 +11,7 @@
 
 (function () {
     'use strict';
-
+    const delay_time = 2500
     // 动态为元素添加样式
     function addStyles(element, styles) {
         for (const [key, value] of Object.entries(styles)) {
@@ -236,7 +236,7 @@
         }
     }
     // setTimeout(addCss,1000)
-    setTimeout(initialize, 2500);
+    setTimeout(initialize, delay_time);
     // 对于某些页面可能DOMContentLoaded已经触发，直接执行初始化
     // if (document.readyState === 'interactive' || document.readyState === 'complete') {
     //   // const event = new Event('DOMContentLoaded');
