@@ -12,6 +12,7 @@
 (function () {
     'use strict';
     const delay_time = 2500
+    let allCount = 0;
     // 动态为元素添加样式
     function addStyles(element, styles) {
         for (const [key, value] of Object.entries(styles)) {
@@ -25,7 +26,7 @@
         if (document.getElementById('billi-filter-search')) {
             return;
         }
-
+        console.log("finding box...");
         // 创建搜索框容器
         const searchContainer = document.createElement('div');
         searchContainer.id = 'billi-filter-container';
@@ -110,21 +111,30 @@
 
         return searchContainer;
     }
-
+    
     // 筛选视频列表
     function filterVideos(keyword) {
         // 获取所有视频项
         const videoItems = document.querySelectorAll('.video-pod__item');
-
         // 如果关键词为空，显示所有视频
-        if (!keyword) {
+
+        allCount = 0;
             videoItems.forEach(item => {
                 item.style.display = '';
-            });
-            updateFilterStatus(videoItems.length, videoItems.length);
-            return;
+                allCount+=1;
+                let sub_items = item.querySelectorAll('.sub');
+                if(sub_items && sub_items.length > 0) {
+                    sub_items.forEach(sub_item => {
+                        sub_item.style.display = '';
+                        allCount+=1;
+                    });
+                }
+        });
+        if (keyword == "") {
+            updateFilterStatus(allCount, allCount);
+            return
         }
-
+        
         // 转换关键词为小写，用于不区分大小写的搜索
         const lowerKeyword = keyword.toLowerCase();
         let visibleCount = 0;
@@ -144,13 +154,33 @@
             if (title.includes(lowerKeyword)) {
                 item.style.display = '';
                 visibleCount++;
-            } else {
+            } else if(item.querySelector('.sub')) {
+                // 如果标题不包含关键词，检查子元素
+                let sub_items = item.querySelectorAll('.sub');
+                let sub_visible = false;
+                sub_items.forEach(sub_item => {
+                    const sub_title = sub_item.textContent.toLowerCase();
+                    if (sub_title.includes(lowerKeyword)) {
+                        sub_item.style.display = '';
+                        visibleCount++;
+                        sub_visible = true;
+                    } else {
+                        sub_item.style.display = 'none';
+                    }
+                });
+                // 如果子元素没有匹配，隐藏视频
+                if (!sub_visible) {
+                    item.style.display = 'none';
+                }
+            }
+            else{
                 item.style.display = 'none';
             }
         });
 
         // 更新筛选状态
-        updateFilterStatus(visibleCount, videoItems.length);
+        updateFilterStatus(visibleCount, allCount);
+        // updateFilterStatus(visibleCount, videoItems.length);
     }
 
     // 更新筛选状态信息
@@ -193,23 +223,26 @@
 
     // 监听DOM变化，处理动态加载的内容
     function observePageChanges() {
-        const observer = new MutationObserver(function (mutations) {
-            mutations.forEach(function (mutation) {
-                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                    // 检查是否有视频列表被添加
-                    const videoListAdded = Array.from(mutation.addedNodes).some(node => {
-                        return node.nodeType === 1 && (
-                            node.classList.contains('video-pod__list') ||
-                            node.querySelector('.video-pod__list')
-                        );
-                    });
+        const observer = new MutationObserver(function (mutations,observer) {
+            // mutations.forEach(function (mutation) {
+            //     if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+            //         // 检查是否有视频列表被添加
+            //         const videoListAdded = Array.from(mutation.addedNodes).some(node => {
+            //             return node.nodeType === 1 && (
+            //                 node.classList.contains('video-pod__list') ||
+            //                 node.querySelector('.video-pod__list')
+            //             );
+            //         });
 
-                    if (videoListAdded) {
-                        // 如果视频列表被添加，创建搜索框
-                        setTimeout(createSearchBox, 500);
-                    }
-                }
-            });
+            //         if (videoListAdded) {
+            //             // 如果视频列表被添加，创建搜索框
+            //             setTimeout(createSearchBox, 500);
+            //         }
+            //     }
+            // });
+            if (document.getElementsByClassName("video-pod__list")){
+                observer.disconnect()
+            }
         });
 
         // 开始观察整个文档
@@ -228,7 +261,7 @@
 
         // 如果没有成功创建搜索框（可能页面还未完全加载），设置定时器再次尝试
         if (!searchBox) {
-            setTimeout(initialize, 3000);
+            setTimeout(createSearchBox(), delay_time);
         }
         else {
             // 开始观察页面变化
