@@ -6,8 +6,7 @@
   "content_scripts": [
     {
       "matches": ["*://*.bilibili.com/video/*"],
-      "js": ["content.js"],
-      "css": ["styles.css"]
+      "js": ["content.js"]
     }
   ],
   "permissions": ["activeTab"]
