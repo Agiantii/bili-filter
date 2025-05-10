@@ -1,1 +1,1 @@
-浏览器插件,用于 用 input 为搜索框，筛选内容,结构参考 [](./structure.txt)
+浏览器插件,用于 用 input 为搜索框，筛选内容,结构参考 [structure](./structure.txt)
