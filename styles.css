@@ -1,0 +1,107 @@
+/* 搜索框容器样式 */
+.billi-filter-container {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+  padding: 5px 10px;
+  background-color: #f4f4f4;
+  border-radius: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  width: 300px;
+  max-width: 100%;
+}
+
+/* 搜索框样式 */
+.billi-filter-search {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 8px;
+  font-size: 14px;
+  color: #333;
+  width: 100%;
+}
+
+/* 搜索图标样式 */
+.billi-filter-icon {
+  margin-right: 5px;
+  color: #666;
+  font-size: 16px;
+}
+
+/* 清除按钮样式 */
+.billi-filter-clear {
+  cursor: pointer;
+  color: #999;
+  font-size: 14px;
+  padding: 0 5px;
+}
+
+.billi-filter-clear:hover {
+  color: #666;
+}
+
+/* 筛选状态信息样式 */
+.billi-filter-status {
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+  padding: 3px 8px;
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  display: inline-block;
+  position: absolute;
+  right: 10px;
+  top: 100%;
+}
+
+/* 隐藏的视频项 */
+.video-pod__item[style*="display: none"] {
+  display: none !important;
+}
+
+/* 高亮匹配的关键词（可选功能） */
+.highlight-keyword {
+  background-color: #ffffa0;
+  font-weight: bold;
+}
+
+/* 适配B站深色模式 */
+@media (prefers-color-scheme: dark) {
+  .billi-filter-container {
+    background-color: #2b2b2b;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .billi-filter-search {
+    color: #eee;
+  }
+  
+  .billi-filter-icon,
+  .billi-filter-clear {
+    color: #aaa;
+  }
+  
+  .billi-filter-clear:hover {
+    color: #ddd;
+  }
+  
+  .billi-filter-status {
+    color: #aaa;
+    background-color: #333;
+  }
+  
+  .highlight-keyword {
+    background-color: #665e00;
+  }
+}
+
+/* 响应式设计 */
+@media screen and (max-width: 768px) {
+  .billi-filter-container {
+    width: 90%;
+    margin: 10px auto;
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Bilibili视频筛选器",
+  "version": "1.0",
+  "description": "为视频列表添加搜索筛选功能",
+  "content_scripts": [
+    {
+      "matches": ["*://*.bilibili.com/video/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "permissions": ["activeTab"]
+}
