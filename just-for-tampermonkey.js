@@ -46,7 +46,7 @@
         // 创建搜索框
         const searchInput = document.createElement('input');
         searchInput.id = 'billi-filter-search';
-        searchInput.placeholder="输入关键词筛选视频...";
+        searchInput.placeholder = "输入关键词筛选视频...";
         addStyles(searchInput, {
             flex: '1',
             border: 'none',
@@ -103,15 +103,23 @@
         }
 
         // 添加搜索框输入事件
-        searchInput.addEventListener('input', function () {
+        searchInput.addEventListener('input', function (event) {
             const keyword = this.value.trim();
             clearButton.style.display = keyword ? 'block' : 'none';
             filterVideos(keyword);
         });
 
+        // searchInput.addEventListener('keydown', function (event) {
+        //   if (event.key === 'Enter') {
+        //     const keyword = this.value.trim();
+        //     clearButton.style.display = keyword ? 'block' : 'none';
+        //     filterVideos(keyword);
+        //   }
+        // });
+
         return searchContainer;
     }
-    
+
     // 筛选视频列表
     function filterVideos(keyword) {
         // 获取所有视频项
@@ -119,22 +127,23 @@
         // 如果关键词为空，显示所有视频
 
         allCount = 0;
-            videoItems.forEach(item => {
-                item.style.display = '';
-                allCount+=1;
-                let sub_items = item.querySelectorAll('.sub');
-                if(sub_items && sub_items.length > 0) {
-                    sub_items.forEach(sub_item => {
-                        sub_item.style.display = '';
-                        allCount+=1;
-                    });
-                }
+        videoItems.forEach(item => {
+            item.style.display = '';
+            allCount += 1;
+            let sub_items = item.querySelectorAll('.sub');
+            if (sub_items && sub_items.length > 0) {
+                sub_items.forEach(sub_item => {
+                    sub_item.style.display = '';
+                    allCount += 1;
+                });
+            }
         });
-        if (keyword == "") {
+        if (keyword == "" || keyword == null || keyword.length == 0) {
+            console.log("keyword is empty");
             updateFilterStatus(allCount, allCount);
             return
         }
-        
+
         // 转换关键词为小写，用于不区分大小写的搜索
         const lowerKeyword = keyword.toLowerCase();
         let visibleCount = 0;
@@ -153,8 +162,8 @@
             // 如果标题包含关键词，显示该视频，否则隐藏
             if (title.includes(lowerKeyword)) {
                 item.style.display = '';
-                visibleCount++;
-            } else if(item.querySelector('.sub')) {
+                visibleCount += 1;
+            } else if (item.querySelector('.sub')) {
                 // 如果标题不包含关键词，检查子元素
                 let sub_items = item.querySelectorAll('.sub');
                 let sub_visible = false;
@@ -162,7 +171,7 @@
                     const sub_title = sub_item.textContent.toLowerCase();
                     if (sub_title.includes(lowerKeyword)) {
                         sub_item.style.display = '';
-                        visibleCount++;
+                        visibleCount += 1;
                         sub_visible = true;
                     } else {
                         sub_item.style.display = 'none';
@@ -173,11 +182,12 @@
                     item.style.display = 'none';
                 }
             }
-            else{
+            else {
                 item.style.display = 'none';
             }
         });
-
+        console.log("visibleCount: ", visibleCount);
+        console.log("allCount: ", allCount);
         // 更新筛选状态
         updateFilterStatus(visibleCount, allCount);
         // updateFilterStatus(visibleCount, videoItems.length);
@@ -198,14 +208,16 @@
                 searchContainer.appendChild(statusElement);
             }
         }
-
         // 更新状态文本
-        if (visibleCount < totalCount) {
-            statusElement.textContent = `显示 ${visibleCount}/${totalCount} 个视频`;
-            statusElement.style.display = 'block';
-        } else {
-            statusElement.style.display = 'none';
-        }
+        statusElement.textContent = `显示 ${visibleCount}/${totalCount} 个视频`;
+        statusElement.style.display = 'block';
+        // // 更新状态文本
+        // if (visibleCount < totalCount) {
+        //   statusElement.textContent = `显示 ${visibleCount}/${totalCount} 个视频`;
+        //   statusElement.style.display = 'block';
+        // } else {
+        //   statusElement.style.display = 'none';
+        // }
 
         addStyles(statusElement, {
             fontSize: '12px',
@@ -223,7 +235,7 @@
 
     // 监听DOM变化，处理动态加载的内容
     function observePageChanges() {
-        const observer = new MutationObserver(function (mutations,observer) {
+        const observer = new MutationObserver(function (mutations, observer) {
             // mutations.forEach(function (mutation) {
             //     if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
             //         // 检查是否有视频列表被添加
@@ -240,7 +252,7 @@
             //         }
             //     }
             // });
-            if (document.getElementsByClassName("video-pod__list")){
+            if (document.getElementsByClassName("video-pod__list")) {
                 observer.disconnect()
             }
         });
