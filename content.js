@@ -103,11 +103,19 @@
     }
 
     // 添加搜索框输入事件
-    searchInput.addEventListener('input', function () {
+    searchInput.addEventListener('input', function (event) {
       const keyword = this.value.trim();
       clearButton.style.display = keyword ? 'block' : 'none';
       filterVideos(keyword);
     });
+    
+    // searchInput.addEventListener('keydown', function (event) {
+    //   if (event.key === 'Enter') {
+    //     const keyword = this.value.trim();
+    //     clearButton.style.display = keyword ? 'block' : 'none';
+    //     filterVideos(keyword);
+    //   }
+    // });
 
     return searchContainer;
   }
@@ -130,7 +138,8 @@
         });
       }
     });
-    if (keyword == "") {
+    if (keyword == "" || keyword == null || keyword.length ==0) {
+      console.log("keyword is empty");
       updateFilterStatus(allCount, allCount);
       return
     }
@@ -153,7 +162,7 @@
       // 如果标题包含关键词，显示该视频，否则隐藏
       if (title.includes(lowerKeyword)) {
         item.style.display = '';
-        visibleCount++;
+        visibleCount+=1;
       } else if (item.querySelector('.sub')) {
         // 如果标题不包含关键词，检查子元素
         let sub_items = item.querySelectorAll('.sub');
@@ -162,7 +171,7 @@
           const sub_title = sub_item.textContent.toLowerCase();
           if (sub_title.includes(lowerKeyword)) {
             sub_item.style.display = '';
-            visibleCount++;
+            visibleCount+=1;
             sub_visible = true;
           } else {
             sub_item.style.display = 'none';
@@ -177,7 +186,8 @@
         item.style.display = 'none';
       }
     });
-
+    console.log("visibleCount: ", visibleCount);
+    console.log("allCount: ", allCount);
     // 更新筛选状态
     updateFilterStatus(visibleCount, allCount);
     // updateFilterStatus(visibleCount, videoItems.length);
@@ -198,14 +208,16 @@
         searchContainer.appendChild(statusElement);
       }
     }
-
     // 更新状态文本
-    if (visibleCount < totalCount) {
       statusElement.textContent = `显示 ${visibleCount}/${totalCount} 个视频`;
       statusElement.style.display = 'block';
-    } else {
-      statusElement.style.display = 'none';
-    }
+    // // 更新状态文本
+    // if (visibleCount < totalCount) {
+    //   statusElement.textContent = `显示 ${visibleCount}/${totalCount} 个视频`;
+    //   statusElement.style.display = 'block';
+    // } else {
+    //   statusElement.style.display = 'none';
+    // }
 
     addStyles(statusElement, {
       fontSize: '12px',
